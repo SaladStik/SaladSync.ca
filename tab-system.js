@@ -37,8 +37,14 @@ function initTabSystem() {
   // Setup file item click handlers
   const fileItems = document.querySelectorAll(".file-item");
   fileItems.forEach((item) => {
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
       const fileName = item.getAttribute("data-file");
+
+      // Skip navigation for markdown files - context menu will handle them
+      if (fileName.endsWith(".md")) {
+        return;
+      }
+
       showFile(fileName);
       setActiveTab(fileName);
       item.classList.add("active");

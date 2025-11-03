@@ -235,6 +235,21 @@
             <span class="tab-name">Welcome</span>
             <span class="tab-close">✕</span>
           </div>
+          <div class="tab" data-file="about.md" data-tab-id="about.md:preview">
+            <span class="tab-icon">📄</span>
+            <span class="tab-name">about.md (Preview)</span>
+            <span class="tab-close">×</span>
+          </div>
+          <div class="tab" data-file="logo.png" data-tab-id="logo.png">
+            <span class="tab-icon">🖼️</span>
+            <span class="tab-name">logo.png</span>
+            <span class="tab-close">×</span>
+          </div>
+          <div class="tab" data-file="profile.png" data-tab-id="profile.png">
+            <span class="tab-icon">🖼️</span>
+            <span class="tab-name">profile.png</span>
+            <span class="tab-close">×</span>
+          </div>
         </div>
 
         <!-- Editor Content -->
@@ -802,7 +817,6 @@
                   - Built from scratch (no frameworks)
                 </div>
                 <div class="code-line">- VS Code interface design</div>
-                <div class="code-line">- Fully interactive and responsive</div>
                 <div class="code-line"></div>
                 <div class="code-line">
                   Visit: <span class="markdown-link">https://saladsync.ca</span>
@@ -1208,6 +1222,61 @@
                     src="https://avatars.githubusercontent.com/u/106854005?v=4"
                     alt="Logo"
                     id="logoImage"
+                    crossorigin="anonymous"
+                  />
+                </div>
+              </div>
+              <div class="image-viewer-footer">
+                <span class="footer-info"
+                  >Image Preview - Powered by VS Code Image Viewer
+                  Extension</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Image -->
+          <div class="editor-file" data-file="profile.png">
+            <div class="image-viewer">
+              <div class="image-viewer-header">
+                <div class="image-info">
+                  <span class="image-filename">profile.png</span>
+                  <span class="image-dimensions" id="profileDimensions"
+                    >Loading...</span
+                  >
+                  <span class="image-size" id="profileSize"></span>
+                </div>
+                <div class="image-controls">
+                  <button
+                    class="image-control-btn"
+                    id="profileZoomOut"
+                    title="Zoom Out"
+                  >
+                    −
+                  </button>
+                  <span class="zoom-level" id="profileZoomLevel">100%</span>
+                  <button
+                    class="image-control-btn"
+                    id="profileZoomIn"
+                    title="Zoom In"
+                  >
+                    +
+                  </button>
+                  <button
+                    class="image-control-btn"
+                    id="profileResetZoom"
+                    title="Reset Zoom"
+                  >
+                    ⟲
+                  </button>
+                </div>
+              </div>
+              <div class="image-viewer-content">
+                <div class="image-container" id="profileImageContainer">
+                  <img
+                    src="https://avatars.githubusercontent.com/u/106854005?v=4"
+                    alt="Profile"
+                    id="profileImage"
                     crossorigin="anonymous"
                   />
                 </div>

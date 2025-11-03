@@ -34,6 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Check if it's a markdown file
       if (fileName.endsWith(".md")) {
+        e.preventDefault();
+        e.stopPropagation();
         showMarkdownContextMenu(e, fileName);
       } else {
         openFile(fileName);
