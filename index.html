@@ -230,22 +230,96 @@
       <div class="editor-area">
         <!-- Tabs -->
         <div class="tabs">
-          <div class="tab active" data-file="about.md" data-tab-id="about.md">
-            <span class="tab-icon">📄</span>
-            <span class="tab-name">about.md</span>
-            <span class="tab-close">✕</span>
-          </div>
-          <div class="tab" data-file="projects.md" data-tab-id="projects.md">
-            <span class="tab-icon">📄</span>
-            <span class="tab-name">projects.md</span>
+          <div class="tab active" data-file="welcome" data-tab-id="welcome">
+            <span class="tab-icon">🏠</span>
+            <span class="tab-name">Welcome</span>
             <span class="tab-close">✕</span>
           </div>
         </div>
 
         <!-- Editor Content -->
         <div class="editor-content">
+          <!-- Welcome Screen -->
+          <div class="welcome-screen active" data-file="welcome">
+            <div class="welcome-container">
+              <div class="welcome-header">
+                <h1>Nick Irvine</h1>
+                <p class="welcome-subtitle">
+                  Interactive VS Code-style Portfolio
+                </p>
+              </div>
+
+              <div class="welcome-section">
+                <h3>Start</h3>
+                <div class="welcome-links">
+                  <div
+                    class="welcome-link"
+                    data-action="open-file"
+                    data-file="about.md"
+                  >
+                    <span class="link-icon">📄</span>
+                    <div class="link-text">
+                      <div class="link-title">Open about.md</div>
+                      <div class="link-description">Learn about me</div>
+                    </div>
+                  </div>
+                  <div
+                    class="welcome-link"
+                    data-action="open-file"
+                    data-file="projects.md"
+                  >
+                    <span class="link-icon">📁</span>
+                    <div class="link-text">
+                      <div class="link-title">View projects.md</div>
+                      <div class="link-description">See my work</div>
+                    </div>
+                  </div>
+                  <div
+                    class="welcome-link"
+                    data-action="open-file"
+                    data-file="skills.md"
+                  >
+                    <span class="link-icon">⚡</span>
+                    <div class="link-text">
+                      <div class="link-title">Check skills.md</div>
+                      <div class="link-description">My technical skills</div>
+                    </div>
+                  </div>
+                  <div
+                    class="welcome-link"
+                    data-action="open-file"
+                    data-file="contact.md"
+                  >
+                    <span class="link-icon">✉️</span>
+                    <div class="link-text">
+                      <div class="link-title">Open contact.md</div>
+                      <div class="link-description">Get in touch</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="welcome-section">
+                <h3>Recent</h3>
+                <div class="welcome-links">
+                  <div
+                    class="welcome-link"
+                    data-action="open-file"
+                    data-file="README.md"
+                  >
+                    <span class="link-icon">📖</span>
+                    <div class="link-text">
+                      <div class="link-title">README.md</div>
+                      <div class="link-description">Project documentation</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- about.md -->
-          <div class="editor-file active" data-file="about.md">
+          <div class="editor-file" data-file="about.md">
             <div class="md-editor-view">
               <div class="line-numbers">
                 <div class="line-number">1</div>

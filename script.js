@@ -20,6 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize markdown context menu
   initMarkdownContextMenu();
 
+  // Initialize welcome screen
+  initWelcomeScreen();
+
   // File item clicks
   const fileItems = document.querySelectorAll(".file-item");
   const tabs = document.querySelectorAll(".tab");
@@ -43,16 +46,49 @@ document.addEventListener("DOMContentLoaded", () => {
     tab.addEventListener("click", (e) => {
       if (!e.target.classList.contains("tab-close")) {
         const fileName = tab.getAttribute("data-file");
-        switchToTab(fileName);
+        const tabId = tab.getAttribute("data-tab-id");
+
+        // Handle welcome tab
+        if (fileName === "welcome") {
+          switchToWelcomeTab();
+          return;
+        }
+
+        // Determine mode from tab-id
+        let mode = null;
+        if (tabId && tabId.includes(":preview")) {
+          mode = "preview";
+        } else if (fileName && fileName.endsWith(".md")) {
+          mode = "editor";
+        }
+
+        if (mode) {
+          switchToTab(fileName, mode);
+        } else {
+          switchToTab(fileName);
+        }
       }
     });
 
     // Tab close button
     const closeBtn = tab.querySelector(".tab-close");
-    closeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      closeTab(tab.getAttribute("data-file"));
-    });
+    if (closeBtn) {
+      closeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const fileName = tab.getAttribute("data-file");
+        const tabId = tab.getAttribute("data-tab-id");
+
+        // Determine mode from tab-id
+        let mode = null;
+        if (tabId && tabId.includes(":preview")) {
+          mode = "preview";
+        } else if (fileName && fileName.endsWith(".md")) {
+          mode = "editor";
+        }
+
+        closeTab(fileName, mode);
+      });
+    }
   });
 
   // Activity bar icons
@@ -428,7 +464,6 @@ function initLogoImageViewer() {
 function renderMarkdownPreview(editorFile) {
   const previewContent = editorFile.querySelector(".markdown-preview-content");
   if (!previewContent) {
-    console.error("Preview content not found!");
     return;
   }
 
@@ -449,16 +484,11 @@ function renderMarkdownPreview(editorFile) {
     markdownText = lines.join("\n");
   }
 
-  console.log("Markdown text length:", markdownText.length);
   const html = convertMarkdownToHTML(markdownText);
-  console.log("HTML output:", html.substring(0, 200));
   previewContent.innerHTML = html;
-  console.log("Preview content innerHTML set");
 }
 
 function convertMarkdownToHTML(markdown) {
-  console.log("Converting markdown to HTML...");
-
   // Split into lines for processing
   const lines = markdown.split("\n");
   const result = [];
@@ -468,8 +498,6 @@ function convertMarkdownToHTML(markdown) {
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
     const trimmed = line.trim();
-
-    console.log(`Processing line ${i}: "${trimmed}"`);
 
     if (trimmed.startsWith("### ")) {
       // H3 header
@@ -1066,11 +1094,23 @@ function createTab(fileName, mode) {
     e.stopPropagation();
     closeTab(fileName, mode);
   });
+
+  // Hide welcome screen when new tab is created
+  const welcomeScreen = document.querySelector(".welcome-screen");
+  if (welcomeScreen) {
+    welcomeScreen.classList.remove("active");
+  }
 }
 
 // Switch to an existing tab
 function switchToTab(fileName, mode) {
   const tabId = mode === "preview" ? `${fileName}:preview` : fileName;
+
+  // Hide welcome screen
+  const welcomeScreen = document.querySelector(".welcome-screen");
+  if (welcomeScreen) {
+    welcomeScreen.classList.remove("active");
+  }
 
   // Update tab active state
   document.querySelectorAll(".tab").forEach((tab) => {
@@ -1109,13 +1149,24 @@ function closeTab(fileName, mode) {
   const wasActive = tabToClose.classList.contains("active");
   tabToClose.remove();
 
-  // If closed tab was active, activate another tab
-  if (wasActive && tabs.length > 1) {
-    const remainingTabs = document.querySelectorAll(".tab");
-    if (remainingTabs.length > 0) {
-      const nextTab = remainingTabs[remainingTabs.length - 1];
-      const nextTabId = nextTab.getAttribute("data-tab-id");
+  // Check remaining tabs
+  const remainingTabs = document.querySelectorAll(".tab");
 
+  // If no tabs left, create a new welcome tab
+  if (remainingTabs.length === 0) {
+    createWelcomeTab();
+    return;
+  }
+
+  // If closed tab was active, activate another tab
+  if (wasActive) {
+    const nextTab = remainingTabs[remainingTabs.length - 1];
+    const nextTabId = nextTab.getAttribute("data-tab-id");
+
+    // Check if it's the welcome tab
+    if (nextTabId === "welcome") {
+      switchToWelcomeTab();
+    } else {
       // Parse the tab ID to get fileName and mode
       const isPreview = nextTabId.includes(":preview");
       const nextFileName = isPreview
@@ -1168,4 +1219,77 @@ function setMarkdownMode(fileName, mode) {
     // Render the preview content
     renderMarkdownPreview(editorFile);
   }
+}
+
+// Welcome Screen Functions
+function initWelcomeScreen() {
+  const welcomeLinks = document.querySelectorAll(
+    '.welcome-link[data-action="open-file"]'
+  );
+
+  welcomeLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      const fileName = link.getAttribute("data-file");
+
+      if (fileName.endsWith(".md")) {
+        // Open markdown files in preview mode by default
+        openFile(fileName, "preview");
+      } else {
+        openFile(fileName);
+      }
+    });
+  });
+}
+
+function switchToWelcomeTab() {
+  // Set welcome tab as active
+  document.querySelectorAll(".tab").forEach((tab) => {
+    if (tab.getAttribute("data-tab-id") === "welcome") {
+      tab.classList.add("active");
+    } else {
+      tab.classList.remove("active");
+    }
+  });
+
+  // Hide all editor files
+  document.querySelectorAll(".editor-file").forEach((file) => {
+    file.classList.remove("active");
+  });
+
+  // Show welcome screen
+  const welcomeScreen = document.querySelector(".welcome-screen");
+  if (welcomeScreen) {
+    welcomeScreen.classList.add("active");
+  }
+}
+
+function createWelcomeTab() {
+  const tabContainer = document.querySelector(".tabs");
+  const newTab = document.createElement("div");
+  newTab.className = "tab active";
+  newTab.setAttribute("data-file", "welcome");
+  newTab.setAttribute("data-tab-id", "welcome");
+
+  newTab.innerHTML = `
+    <span class="tab-icon">🏠</span>
+    <span class="tab-name">Welcome</span>
+    <span class="tab-close">✕</span>
+  `;
+
+  tabContainer.appendChild(newTab);
+
+  // Add click handlers
+  newTab.addEventListener("click", (e) => {
+    if (!e.target.classList.contains("tab-close")) {
+      switchToWelcomeTab();
+    }
+  });
+
+  newTab.querySelector(".tab-close").addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeTab("welcome", null);
+  });
+
+  // Show welcome screen
+  switchToWelcomeTab();
 }

@@ -4,8 +4,8 @@
 function initTabSystem() {
   console.log("Initializing tab system...");
 
-  // Make sure about.md is visible on load
-  showFile("about.md");
+  // Show welcome screen on load instead of about.md
+  showWelcomeScreen();
 
   // Setup tab click handlers
   const tabs = document.querySelectorAll(".tab");
@@ -13,8 +13,14 @@ function initTabSystem() {
     tab.addEventListener("click", (e) => {
       if (!e.target.classList.contains("tab-close")) {
         const fileName = tab.getAttribute("data-file");
-        showFile(fileName);
-        setActiveTab(fileName);
+
+        // Handle welcome tab
+        if (fileName === "welcome") {
+          showWelcomeScreen();
+        } else {
+          showFile(fileName);
+          setActiveTab(fileName);
+        }
       }
     });
 
@@ -159,6 +165,35 @@ function closeTab(fileName) {
       setActiveTab(firstFileName);
     }
   }
+}
+
+// Show welcome screen
+function showWelcomeScreen() {
+  console.log("Showing welcome screen");
+
+  // Hide all editor files
+  const allFiles = document.querySelectorAll(".editor-file");
+  allFiles.forEach((file) => {
+    file.style.display = "none";
+    file.classList.remove("active");
+  });
+
+  // Show welcome screen
+  const welcomeScreen = document.querySelector(".welcome-screen");
+  if (welcomeScreen) {
+    welcomeScreen.classList.add("active");
+    welcomeScreen.style.display = "flex";
+  }
+
+  // Make sure welcome tab is active
+  const tabs = document.querySelectorAll(".tab");
+  tabs.forEach((tab) => {
+    if (tab.getAttribute("data-file") === "welcome") {
+      tab.classList.add("active");
+    } else {
+      tab.classList.remove("active");
+    }
+  });
 }
 
 // Initialize on page load
