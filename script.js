@@ -4,44 +4,7 @@
 let originalExplorerContent = null;
 
 // Sidebar resize functionality
-function initSidebarResize() {
-  const sidebar = document.querySelector(".sidebar");
-  const resizeHandle = document.querySelector(".sidebar-resize-handle");
-  let isResizing = false;
-  let startX = 0;
-  let startWidth = 0;
-
-  resizeHandle.addEventListener("mousedown", (e) => {
-    isResizing = true;
-    startX = e.clientX;
-    startWidth = sidebar.offsetWidth;
-    resizeHandle.classList.add("resizing");
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-    e.preventDefault();
-  });
-
-  document.addEventListener("mousemove", (e) => {
-    if (!isResizing) return;
-
-    const width = startWidth + (e.clientX - startX);
-    const minWidth = 170;
-    const maxWidth = 600;
-
-    if (width >= minWidth && width <= maxWidth) {
-      sidebar.style.width = width + "px";
-    }
-  });
-
-  document.addEventListener("mouseup", () => {
-    if (isResizing) {
-      isResizing = false;
-      resizeHandle.classList.remove("resizing");
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    }
-  });
-}
+// Sidebar resize removed - now fixed at 250px
 
 // Tab Management
 document.addEventListener("DOMContentLoaded", () => {
@@ -51,14 +14,11 @@ document.addEventListener("DOMContentLoaded", () => {
     originalExplorerContent = sidebarContent.innerHTML;
   }
 
-  // Initialize sidebar features
-  initSidebarResize();
-
   // Make all code content areas editable
   initializeEditableEditors();
 
-  // Initialize markdown viewer toggles
-  initMarkdownViewerToggles();
+  // Initialize markdown context menu
+  initMarkdownContextMenu();
 
   // File item clicks
   const fileItems = document.querySelectorAll(".file-item");
@@ -66,9 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const editorFiles = document.querySelectorAll(".editor-file");
 
   fileItems.forEach((item) => {
-    item.addEventListener("click", () => {
+    item.addEventListener("click", (e) => {
       const fileName = item.getAttribute("data-file");
-      openFile(fileName);
+
+      // Check if it's a markdown file
+      if (fileName.endsWith(".md")) {
+        showMarkdownContextMenu(e, fileName);
+      } else {
+        openFile(fileName);
+      }
     });
   });
 
@@ -148,95 +114,7 @@ function openFile(fileName) {
     .classList.add("active");
 }
 
-function createTab(fileName) {
-  const tabsContainer = document.querySelector(".tabs");
-  const tab = document.createElement("div");
-  tab.className = "tab";
-  tab.setAttribute("data-file", fileName);
-  tab.innerHTML = `
-        <span class="tab-icon">📄</span>
-        <span class="tab-name">${fileName}</span>
-        <span class="tab-close">✕</span>
-    `;
-
-  tabsContainer.appendChild(tab);
-
-  // Add event listeners to the new tab
-  tab.addEventListener("click", (e) => {
-    if (!e.target.classList.contains("tab-close")) {
-      switchToTab(fileName);
-    }
-  });
-
-  const closeBtn = tab.querySelector(".tab-close");
-  closeBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    closeTab(fileName);
-  });
-
-  switchToTab(fileName);
-}
-
-function switchToTab(fileName) {
-  // Update tabs
-  document.querySelectorAll(".tab").forEach((tab) => {
-    tab.classList.remove("active");
-  });
-  document
-    .querySelector(`.tab[data-file="${fileName}"]`)
-    .classList.add("active");
-
-  // Update editor content - hide all files first
-  document.querySelectorAll(".editor-file").forEach((file) => {
-    file.classList.remove("active");
-  });
-
-  // Show the active file
-  const editorFile = document.querySelector(
-    `.editor-file[data-file="${fileName}"]`
-  );
-  if (editorFile) {
-    editorFile.classList.add("active");
-
-    // Reset to editor view when switching tabs
-    const editorBtn = editorFile.querySelector('[data-mode="editor"]');
-    const previewBtn = editorFile.querySelector('[data-mode="preview"]');
-
-    if (editorBtn && previewBtn) {
-      editorBtn.classList.add("active");
-      previewBtn.classList.remove("active");
-      showEditor(editorFile);
-    }
-  }
-
-  // Update file item active state
-  document.querySelectorAll(".file-item").forEach((item) => {
-    item.classList.remove("active");
-  });
-  const fileItem = document.querySelector(
-    `.file-item[data-file="${fileName}"]`
-  );
-  if (fileItem) {
-    fileItem.classList.add("active");
-  }
-}
-
-function closeTab(fileName) {
-  const tab = document.querySelector(`.tab[data-file="${fileName}"]`);
-  const wasActive = tab.classList.contains("active");
-
-  tab.remove();
-
-  // If the closed tab was active, switch to another tab
-  if (wasActive) {
-    const remainingTabs = document.querySelectorAll(".tab");
-    if (remainingTabs.length > 0) {
-      const newActiveFile =
-        remainingTabs[remainingTabs.length - 1].getAttribute("data-file");
-      switchToTab(newActiveFile);
-    }
-  }
-}
+// Old tab functions removed - see new versions at end of file that support editor/preview modes
 
 function updateSidebar(tabType) {
   const sidebarTitle = document.querySelector(".sidebar-title");
@@ -545,100 +423,7 @@ function initLogoImageViewer() {
 }
 
 // Markdown Viewer Functionality
-function initMarkdownViewerToggles() {
-  const viewerToggles = document.querySelectorAll(".md-viewer-toggle");
-
-  viewerToggles.forEach((toggle) => {
-    const editorFile = toggle.closest(".editor-file");
-    const editorBtn = toggle.querySelector('[data-mode="editor"]');
-    const previewBtn = toggle.querySelector('[data-mode="preview"]');
-
-    if (!editorBtn || !previewBtn) {
-      console.error("Toggle buttons not found");
-      return;
-    }
-
-    editorBtn.addEventListener("click", () => {
-      console.log("Editor button clicked");
-      editorBtn.classList.add("active");
-      previewBtn.classList.remove("active");
-      showEditor(editorFile);
-    });
-
-    previewBtn.addEventListener("click", () => {
-      console.log("Preview button clicked");
-      previewBtn.classList.add("active");
-      editorBtn.classList.remove("active");
-      showMarkdownPreview(editorFile);
-    });
-  });
-}
-
-function showEditor(editorFile) {
-  // Remove any existing preview
-  const existingPreview = editorFile.querySelector(".full-preview");
-  if (existingPreview) {
-    existingPreview.remove();
-  }
-
-  // Show original editor content
-  const editorView = editorFile.querySelector(".md-editor-view");
-  const previewView = editorFile.querySelector(".md-preview-view");
-  if (editorView) editorView.style.display = "flex";
-  if (previewView) previewView.style.display = "none";
-}
-
-function showMarkdownPreview(editorFile) {
-  console.log("Creating markdown preview");
-
-  // Hide original editor content
-  const editorView = editorFile.querySelector(".md-editor-view");
-  const previewView = editorFile.querySelector(".md-preview-view");
-  if (editorView) editorView.style.display = "none";
-  if (previewView) previewView.style.display = "none";
-
-  // Get markdown content
-  let markdownText = "";
-  const codeContent = editorFile.querySelector(".code-content pre");
-  if (codeContent) {
-    markdownText = codeContent.textContent;
-  } else {
-    const codeLines = editorFile.querySelectorAll(".code-line");
-    const lines = [];
-    codeLines.forEach((line) => {
-      lines.push(line.textContent);
-    });
-    markdownText = lines.join("\n");
-  }
-
-  console.log("Markdown text length:", markdownText.length);
-  console.log("First 100 chars:", markdownText.substring(0, 100));
-
-  // Convert to HTML
-  const html = convertMarkdownToHTML(markdownText);
-  console.log("Generated HTML length:", html.length);
-  console.log("First 200 chars of HTML:", html.substring(0, 200));
-
-  // Create full preview element
-  const fullPreview = document.createElement("div");
-  fullPreview.className = "full-preview";
-  fullPreview.innerHTML = html;
-
-  // Remove existing preview if any
-  const existingPreview = editorFile.querySelector(".full-preview");
-  if (existingPreview) {
-    existingPreview.remove();
-  }
-
-  // Add to editor file
-  editorFile.appendChild(fullPreview);
-
-  console.log("Preview element added to DOM");
-  console.log(
-    "Preview element dimensions:",
-    fullPreview.getBoundingClientRect()
-  );
-}
+// Old toggle functions removed - now using context menu
 
 function renderMarkdownPreview(editorFile) {
   const previewContent = editorFile.querySelector(".markdown-preview-content");
@@ -856,8 +641,11 @@ function initializeEditableEditors() {
   });
 }
 
-// Apply syntax highlighting using CSS
+// Apply syntax highlighting using CSS - DISABLED
 function applySyntaxHighlighting(element, fileName) {
+  // Syntax highlighting disabled - no post-processing
+  return;
+
   const text = element.textContent;
   const cursorPos = saveCursorPositionSimple(element);
 
@@ -1167,3 +955,217 @@ function initLineNumberSync() {
 document.addEventListener("DOMContentLoaded", () => {
   initLineNumberSync();
 });
+
+// Initialize markdown context menu
+function initMarkdownContextMenu() {
+  const contextMenu = document.getElementById("mdContextMenu");
+
+  // Close context menu when clicking outside
+  document.addEventListener("click", () => {
+    contextMenu.style.display = "none";
+  });
+}
+
+// Show markdown context menu at click position
+function showMarkdownContextMenu(event, fileName) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const contextMenu = document.getElementById("mdContextMenu");
+  contextMenu.style.display = "block";
+  contextMenu.style.left = event.pageX + "px";
+  contextMenu.style.top = event.pageY + "px";
+
+  // Set up menu item handlers
+  const editOption = contextMenu.querySelector('[data-mode="editor"]');
+  const previewOption = contextMenu.querySelector('[data-mode="preview"]');
+
+  editOption.onclick = (e) => {
+    e.stopPropagation();
+    openFile(fileName, "editor");
+    contextMenu.style.display = "none";
+  };
+
+  previewOption.onclick = (e) => {
+    e.stopPropagation();
+    openFile(fileName, "preview");
+    contextMenu.style.display = "none";
+  };
+}
+
+// Modified openFile to support mode parameter
+function openFile(fileName, mode = null) {
+  const tabs = document.querySelectorAll(".tab");
+  const editorFiles = document.querySelectorAll(".editor-file");
+
+  // For markdown files, mode is required
+  if (fileName.endsWith(".md") && !mode) {
+    return; // Should not happen with context menu
+  }
+
+  // Create unique tab ID
+  const tabId = mode === "preview" ? `${fileName}:preview` : fileName;
+
+  // Check if tab already exists
+  let existingTab = Array.from(tabs).find(
+    (tab) => tab.getAttribute("data-tab-id") === tabId
+  );
+
+  if (existingTab) {
+    switchToTab(fileName, mode);
+    return;
+  }
+
+  // Create new tab
+  createTab(fileName, mode);
+
+  // Show the file
+  editorFiles.forEach((file) => {
+    if (file.getAttribute("data-file") === fileName) {
+      file.classList.add("active");
+
+      // Set markdown mode if applicable
+      if (fileName.endsWith(".md") && mode) {
+        setMarkdownMode(fileName, mode);
+      }
+    } else {
+      file.classList.remove("active");
+    }
+  });
+}
+
+// Create a new tab
+function createTab(fileName, mode) {
+  const tabContainer = document.querySelector(".tabs");
+  const newTab = document.createElement("div");
+  newTab.className = "tab active";
+
+  const tabId = mode === "preview" ? `${fileName}:preview` : fileName;
+  newTab.setAttribute("data-tab-id", tabId);
+
+  const displayName = mode === "preview" ? `${fileName} (Preview)` : fileName;
+  newTab.innerHTML = `
+    <span class="tab-icon">📄</span>
+    <span class="tab-name">${displayName}</span>
+    <span class="tab-close">×</span>
+  `;
+
+  // Remove active from other tabs
+  document
+    .querySelectorAll(".tab")
+    .forEach((tab) => tab.classList.remove("active"));
+
+  tabContainer.appendChild(newTab);
+
+  // Add click handlers
+  newTab.querySelector(".tab-name").addEventListener("click", () => {
+    switchToTab(fileName, mode);
+  });
+
+  newTab.querySelector(".tab-close").addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeTab(fileName, mode);
+  });
+}
+
+// Switch to an existing tab
+function switchToTab(fileName, mode) {
+  const tabId = mode === "preview" ? `${fileName}:preview` : fileName;
+
+  // Update tab active state
+  document.querySelectorAll(".tab").forEach((tab) => {
+    if (tab.getAttribute("data-tab-id") === tabId) {
+      tab.classList.add("active");
+    } else {
+      tab.classList.remove("active");
+    }
+  });
+
+  // Update file active state
+  document.querySelectorAll(".editor-file").forEach((file) => {
+    if (file.getAttribute("data-file") === fileName) {
+      file.classList.add("active");
+
+      // Set markdown mode if applicable
+      if (fileName.endsWith(".md") && mode) {
+        setMarkdownMode(fileName, mode);
+      }
+    } else {
+      file.classList.remove("active");
+    }
+  });
+}
+
+// Close a tab
+function closeTab(fileName, mode) {
+  const tabId = mode === "preview" ? `${fileName}:preview` : fileName;
+  const tabs = Array.from(document.querySelectorAll(".tab"));
+  const tabToClose = tabs.find(
+    (tab) => tab.getAttribute("data-tab-id") === tabId
+  );
+
+  if (!tabToClose) return;
+
+  const wasActive = tabToClose.classList.contains("active");
+  tabToClose.remove();
+
+  // If closed tab was active, activate another tab
+  if (wasActive && tabs.length > 1) {
+    const remainingTabs = document.querySelectorAll(".tab");
+    if (remainingTabs.length > 0) {
+      const nextTab = remainingTabs[remainingTabs.length - 1];
+      const nextTabId = nextTab.getAttribute("data-tab-id");
+
+      // Parse the tab ID to get fileName and mode
+      const isPreview = nextTabId.includes(":preview");
+      const nextFileName = isPreview
+        ? nextTabId.replace(":preview", "")
+        : nextTabId;
+      const nextMode = isPreview
+        ? "preview"
+        : nextFileName.endsWith(".md")
+        ? "editor"
+        : null;
+
+      switchToTab(nextFileName, nextMode);
+    }
+  }
+
+  // Hide file if no tabs for it
+  const fileHasTabs = Array.from(document.querySelectorAll(".tab")).some(
+    (tab) => {
+      const tid = tab.getAttribute("data-tab-id");
+      return tid === fileName || tid === `${fileName}:preview`;
+    }
+  );
+
+  if (!fileHasTabs) {
+    document.querySelectorAll(".editor-file").forEach((file) => {
+      if (file.getAttribute("data-file") === fileName) {
+        file.classList.remove("active");
+      }
+    });
+  }
+}
+
+// Set markdown view mode
+function setMarkdownMode(fileName, mode) {
+  const editorFile = document.querySelector(
+    `.editor-file[data-file="${fileName}"]`
+  );
+  if (!editorFile) return;
+
+  const editorView = editorFile.querySelector(".md-editor-view");
+  const previewView = editorFile.querySelector(".md-preview-view");
+
+  if (mode === "editor") {
+    if (editorView) editorView.style.display = "flex";
+    if (previewView) previewView.style.display = "none";
+  } else if (mode === "preview") {
+    if (editorView) editorView.style.display = "none";
+    if (previewView) previewView.style.display = "block";
+
+    // Render the preview content
+    renderMarkdownPreview(editorFile);
+  }
+}

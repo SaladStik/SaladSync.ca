@@ -102,7 +102,6 @@
 
       <!-- Sidebar -->
       <div class="sidebar">
-        <div class="sidebar-resize-handle"></div>
         <div class="sidebar-header">
           <span class="sidebar-title">EXPLORER</span>
         </div>
@@ -231,12 +230,12 @@
       <div class="editor-area">
         <!-- Tabs -->
         <div class="tabs">
-          <div class="tab active" data-file="about.md">
+          <div class="tab active" data-file="about.md" data-tab-id="about.md">
             <span class="tab-icon">📄</span>
             <span class="tab-name">about.md</span>
             <span class="tab-close">✕</span>
           </div>
-          <div class="tab" data-file="projects.md">
+          <div class="tab" data-file="projects.md" data-tab-id="projects.md">
             <span class="tab-icon">📄</span>
             <span class="tab-name">projects.md</span>
             <span class="tab-close">✕</span>
@@ -247,12 +246,6 @@
         <div class="editor-content">
           <!-- about.md -->
           <div class="editor-file active" data-file="about.md">
-            <div class="md-viewer-toggle">
-              <button class="viewer-btn active" data-mode="editor">
-                📝 Editor
-              </button>
-              <button class="viewer-btn" data-mode="preview">👁️ Preview</button>
-            </div>
             <div class="md-editor-view">
               <div class="line-numbers">
                 <div class="line-number">1</div>
@@ -321,12 +314,6 @@
 
           <!-- projects.md -->
           <div class="editor-file" data-file="projects.md">
-            <div class="md-viewer-toggle">
-              <button class="viewer-btn active" data-mode="editor">
-                📝 Editor
-              </button>
-              <button class="viewer-btn" data-mode="preview">👁️ Preview</button>
-            </div>
             <div class="md-editor-view">
               <div class="line-numbers">
                 <div class="line-number">1</div>
@@ -402,12 +389,6 @@
 
           <!-- skills.md -->
           <div class="editor-file" data-file="skills.md">
-            <div class="md-viewer-toggle">
-              <button class="viewer-btn active" data-mode="editor">
-                📝 Editor
-              </button>
-              <button class="viewer-btn" data-mode="preview">👁️ Preview</button>
-            </div>
             <div class="md-editor-view">
               <div class="line-numbers">
                 <div class="line-number">1</div>
@@ -469,12 +450,6 @@
 
           <!-- contact.md -->
           <div class="editor-file" data-file="contact.md">
-            <div class="md-viewer-toggle">
-              <button class="viewer-btn active" data-mode="editor">
-                📝 Editor
-              </button>
-              <button class="viewer-btn" data-mode="preview">👁️ Preview</button>
-            </div>
             <div class="md-editor-view">
               <div class="line-numbers">
                 <div class="line-number">1</div>
@@ -722,12 +697,6 @@
 
           <!-- README.md -->
           <div class="editor-file" data-file="README.md">
-            <div class="md-viewer-toggle">
-              <button class="viewer-btn active" data-mode="editor">
-                📝 Editor
-              </button>
-              <button class="viewer-btn" data-mode="preview">👁️ Preview</button>
-            </div>
             <div class="md-editor-view">
               <div class="line-numbers">
                 <div class="line-number">1</div>
@@ -1198,6 +1167,12 @@
         <span class="status-item">UTF-8</span>
         <span class="status-item">Markdown</span>
       </div>
+    </div>
+
+    <!-- Markdown Context Menu -->
+    <div class="md-context-menu" id="mdContextMenu">
+      <div class="context-menu-item" data-mode="editor">Open as Editor</div>
+      <div class="context-menu-item" data-mode="preview">Open as Preview</div>
     </div>
 
     <script src="tab-system.js"></script>
