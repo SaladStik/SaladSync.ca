@@ -708,6 +708,26 @@ body {
   text-decoration: underline;
 }
 
+.markdown-image {
+  display: block;
+  margin: 15px 0;
+  max-width: 25%;
+}
+
+.markdown-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #3c3c3c;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.markdown-image img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
 .markdown-code {
   color: #ce9178;
   background-color: #2d2d2d;

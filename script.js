@@ -618,6 +618,12 @@ function processInlineFormatting(text) {
   // Bold text
   text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 
+  // Images (must come before links since images use similar syntax)
+  text = text.replace(
+    /!\[([^\]]*)\]\(([^)]+)\)/g,
+    '<img src="$2" alt="$1" style="max-width: 25%; height: auto; border-radius: 8px; border: 1px solid #3c3c3c; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); margin: 15px 0; display: block;">'
+  );
+
   // Links
   text = text.replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
