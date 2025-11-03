@@ -1,0 +1,147 @@
+/* CLEAN TAB SYSTEM CSS - FORCES PROPER DISPLAY */
+
+/* Make sure body and container fill viewport */
+body {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.container {
+  height: calc(100vh - 35px); /* Full height minus title bar */
+}
+
+/* Editor area takes remaining space */
+.editor-area {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Tabs bar - fixed height */
+.tabs {
+  height: 35px;
+  flex-shrink: 0;
+}
+
+/* Editor content - fills remaining space */
+.editor-content {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Editor files - all positioned absolutely to fill parent */
+.editor-file {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none !important;
+  flex-direction: row; /* Default to row for non-markdown files */
+  overflow: hidden;
+}
+
+.editor-file.active {
+  display: flex !important;
+}
+
+/* Prevent editing and layout shifts */
+.code-content,
+.line-numbers {
+  user-select: text; /* Allow text selection but not editing */
+  -webkit-user-modify: read-only;
+  -moz-user-modify: read-only;
+}
+
+/* Markdown files: allow editing */
+.md-editor-view .code-content {
+  -webkit-user-modify: read-write;
+  -moz-user-modify: read-write;
+  cursor: text;
+}
+
+.md-editor-view .code-line[contenteditable="true"] {
+  cursor: text;
+  outline: none; /* Remove focus outline */
+}
+
+.code-line {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  min-height: 22px; /* Match line-number height */
+  line-height: 22px;
+  height: 22px;
+}
+
+/* For non-markdown files: direct children in a row */
+.editor-file > .line-numbers {
+  width: 50px;
+  flex-shrink: 0;
+  overflow-y: scroll; /* Scrollable but controlled by JS */
+  overflow-x: hidden;
+  padding-top: 0;
+}
+
+/* Hide scrollbar on line numbers */
+.editor-file > .line-numbers::-webkit-scrollbar {
+  display: none;
+}
+
+.editor-file > .line-numbers {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.editor-file > .code-content {
+  flex: 1;
+  overflow: auto;
+}
+
+/* For markdown files: change to column layout */
+.editor-file:has(.md-viewer-toggle) {
+  flex-direction: column;
+}
+
+/* Markdown viewer layout */
+.md-viewer-toggle {
+  height: 41px;
+  flex-shrink: 0;
+}
+
+.md-editor-view {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.md-preview-view {
+  display: none;
+}
+
+/* Line numbers and code content inside md-editor-view */
+.md-editor-view .line-numbers {
+  width: 50px;
+  flex-shrink: 0;
+  overflow-y: scroll; /* Scrollable but controlled by JS */
+  overflow-x: hidden;
+  padding-top: 0;
+}
+
+/* Hide scrollbar on line numbers */
+.md-editor-view .line-numbers::-webkit-scrollbar {
+  display: none;
+}
+
+.md-editor-view .line-numbers {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.md-editor-view .code-content {
+  flex: 1;
+  overflow: auto;
+}
