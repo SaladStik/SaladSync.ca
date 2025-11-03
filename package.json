@@ -4,10 +4,8 @@
   "description": "Interactive VS Code-style Portfolio",
   "main": "index.html",
   "scripts": {
-    "deploy": "wrangler pages deploy . --project-name=saladsync-portfolio",
-    "deploy:production": "wrangler pages deploy . --project-name=saladsync-portfolio --branch=main",
-    "dev": "wrangler pages dev .",
-    "preview": "wrangler pages deploy . --project-name=saladsync-portfolio --branch=preview"
+    "build": "echo 'No build needed - static site'",
+    "deploy": "wrangler pages deploy . --project-name=saladsync-portfolio"
   },
   "keywords": [
     "portfolio",
