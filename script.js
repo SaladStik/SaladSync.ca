@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     originalExplorerContent = sidebarContent.innerHTML;
   }
 
+  // Initialize mobile menu toggle
+  initMobileMenu();
+
   // Make all code content areas editable
   initializeEditableEditors();
 
@@ -1020,6 +1023,13 @@ function initMarkdownContextMenu() {
   document.addEventListener("click", () => {
     contextMenu.style.display = "none";
   });
+
+  // Also close on touch outside (for mobile)
+  document.addEventListener("touchstart", (e) => {
+    if (!contextMenu.contains(e.target)) {
+      contextMenu.style.display = "none";
+    }
+  });
 }
 
 // Show markdown context menu at click position
@@ -1028,25 +1038,54 @@ function showMarkdownContextMenu(event, fileName) {
   event.stopPropagation();
 
   const contextMenu = document.getElementById("mdContextMenu");
+
+  // Handle both mouse and touch events
+  const posX = event.pageX || (event.touches && event.touches[0].pageX) || 0;
+  const posY = event.pageY || (event.touches && event.touches[0].pageY) || 0;
+
   contextMenu.style.display = "block";
-  contextMenu.style.left = event.pageX + "px";
-  contextMenu.style.top = event.pageY + "px";
+
+  // Position menu, ensuring it stays on screen
+  const menuWidth = 180;
+  const menuHeight = 80;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  let left = posX;
+  let top = posY;
+
+  // Adjust if menu would go off screen
+  if (left + menuWidth > viewportWidth) {
+    left = viewportWidth - menuWidth - 10;
+  }
+  if (top + menuHeight > viewportHeight) {
+    top = viewportHeight - menuHeight - 10;
+  }
+
+  contextMenu.style.left = left + "px";
+  contextMenu.style.top = top + "px";
 
   // Set up menu item handlers
   const editOption = contextMenu.querySelector('[data-mode="editor"]');
   const previewOption = contextMenu.querySelector('[data-mode="preview"]');
 
-  editOption.onclick = (e) => {
+  const handleEdit = (e) => {
     e.stopPropagation();
     openFile(fileName, "editor");
     contextMenu.style.display = "none";
   };
 
-  previewOption.onclick = (e) => {
+  const handlePreview = (e) => {
     e.stopPropagation();
     openFile(fileName, "preview");
     contextMenu.style.display = "none";
   };
+
+  editOption.onclick = handleEdit;
+  editOption.ontouchend = handleEdit;
+
+  previewOption.onclick = handlePreview;
+  previewOption.ontouchend = handlePreview;
 }
 
 // Modified openFile to support mode parameter
@@ -1323,4 +1362,60 @@ function createWelcomeTab() {
 
   // Show welcome screen
   switchToWelcomeTab();
+}
+
+// Mobile Menu Toggle
+function initMobileMenu() {
+  const mobileMenuToggle = document.getElementById("mobileMenuToggle");
+  const sidebar = document.querySelector(".sidebar");
+  const editorArea = document.querySelector(".editor-area");
+  const mobileOverlay = document.getElementById("mobileOverlay");
+
+  if (!mobileMenuToggle) return;
+
+  // Toggle sidebar and overlay
+  mobileMenuToggle.addEventListener("click", () => {
+    const isVisible = sidebar.classList.toggle("mobile-visible");
+    if (mobileOverlay) {
+      mobileOverlay.classList.toggle("active", isVisible);
+    }
+  });
+
+  // Close sidebar when clicking overlay
+  if (mobileOverlay) {
+    mobileOverlay.addEventListener("click", () => {
+      sidebar.classList.remove("mobile-visible");
+      mobileOverlay.classList.remove("active");
+    });
+  }
+
+  // Close sidebar when clicking on editor area on mobile
+  if (editorArea) {
+    editorArea.addEventListener("click", () => {
+      if (
+        window.innerWidth <= 768 &&
+        sidebar.classList.contains("mobile-visible")
+      ) {
+        sidebar.classList.remove("mobile-visible");
+        if (mobileOverlay) {
+          mobileOverlay.classList.remove("active");
+        }
+      }
+    });
+  }
+
+  // Close sidebar when selecting a file on mobile
+  const fileItems = document.querySelectorAll(".file-item");
+  fileItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      if (window.innerWidth <= 768) {
+        setTimeout(() => {
+          sidebar.classList.remove("mobile-visible");
+          if (mobileOverlay) {
+            mobileOverlay.classList.remove("active");
+          }
+        }, 100);
+      }
+    });
+  });
 }

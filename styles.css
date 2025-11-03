@@ -34,6 +34,26 @@ body {
 .title-bar-left {
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #f9f9ff;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 3px;
+  transition: background-color 0.15s;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu-toggle:active {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .menu-items {
@@ -112,6 +132,11 @@ body {
 .title-text {
   font-size: 12px;
   color: #888888;
+}
+
+/* Mobile Overlay - hidden by default */
+.mobile-overlay {
+  display: none;
 }
 
 /* Main Container */
@@ -1085,4 +1110,250 @@ body {
 .link-description {
   font-size: 12px;
   color: #858585;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  /* Show mobile menu toggle */
+  .mobile-menu-toggle {
+    display: block;
+  }
+
+  /* Mobile overlay for sidebar */
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 35px;
+    left: 0;
+    right: 0;
+    bottom: 22px;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+  }
+
+  .mobile-overlay.active {
+    display: block;
+  }
+
+  /* Hide activity bar on mobile */
+  .activity-bar {
+    display: none;
+  }
+
+  /* Make sidebar full width when visible, hide by default */
+  .sidebar {
+    position: fixed;
+    left: -250px;
+    top: 35px;
+    bottom: 22px;
+    width: 250px;
+    z-index: 999;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.mobile-visible {
+    left: 0;
+  }
+
+  /* Editor takes full width */
+  .editor-area {
+    width: 100%;
+  }
+
+  /* Make tabs scrollable horizontally */
+  .tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Smaller tab text */
+  .tab-name {
+    font-size: 12px;
+    max-width: 120px;
+  }
+
+  /* Adjust title bar for mobile */
+  .title-bar {
+    padding: 0 8px;
+  }
+
+  .menu-items {
+    display: none;
+  }
+
+  .search-bar {
+    max-width: 200px;
+  }
+
+  .search-input {
+    font-size: 12px;
+  }
+
+  /* Context menu touch improvements */
+  .md-context-menu {
+    min-width: 180px;
+  }
+
+  .context-menu-item {
+    padding: 12px 16px;
+    font-size: 14px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .context-menu-item:active {
+    background-color: #094771;
+  }
+
+  /* File tree touch improvements */
+  .file-item,
+  .folder-item,
+  .subfolder-item {
+    padding: 10px 12px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .folder-toggle {
+    padding: 4px;
+    margin-right: 4px;
+  }
+
+  /* Tab touch improvements */
+  .tab {
+    min-height: 35px;
+    padding: 0 12px;
+  }
+
+  .tab-close {
+    padding: 4px;
+    margin-left: 8px;
+  }
+
+  /* Welcome screen adjustments */
+  .welcome-container {
+    padding: 20px;
+  }
+
+  .welcome-header h1 {
+    font-size: 28px;
+  }
+
+  .welcome-subtitle {
+    font-size: 14px;
+  }
+
+  /* Code editor adjustments */
+  .line-numbers {
+    width: 40px;
+    font-size: 11px;
+  }
+
+  .code-content {
+    font-size: 12px;
+    padding-left: 10px;
+  }
+
+  /* Markdown preview adjustments */
+  .markdown-preview-content {
+    padding: 15px;
+    font-size: 14px;
+  }
+
+  .markdown-preview-content h1 {
+    font-size: 24px;
+  }
+
+  .markdown-preview-content h2 {
+    font-size: 20px;
+  }
+
+  .markdown-preview-content h3 {
+    font-size: 18px;
+  }
+
+  /* Image viewer adjustments */
+  .image-viewer-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .image-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* Status bar adjustments */
+  .status-bar {
+    font-size: 10px;
+    padding: 0 8px;
+  }
+
+  .status-left,
+  .status-right {
+    gap: 8px;
+  }
+
+  .status-item {
+    padding: 0 3px;
+  }
+
+  /* Hide some status items on very small screens */
+  .status-item:nth-child(n + 3) {
+    display: none;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .title-bar-center {
+    display: none;
+  }
+
+  .tab-name {
+    max-width: 80px;
+  }
+
+  .welcome-header h1 {
+    font-size: 24px;
+  }
+
+  .code-content {
+    font-size: 11px;
+  }
+
+  .line-numbers {
+    width: 35px;
+    font-size: 10px;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .welcome-container {
+    padding: 15px;
+  }
+
+  .welcome-section {
+    margin-bottom: 15px;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .search-bar {
+    max-width: 250px;
+  }
+
+  .tab-name {
+    max-width: 150px;
+  }
 }
