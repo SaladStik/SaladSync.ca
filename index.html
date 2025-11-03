@@ -198,13 +198,26 @@
                 </div>
                 <div class="folder-content collapsed" data-folder="images">
                   <div class="file-item" data-file="profile.jpg">
-                    <span class="file-icon img-icon">📄</span>
+                    <span class="file-icon img-icon">🖼️</span>
                     <span class="file-name">profile.jpg</span>
                   </div>
                   <div class="file-item" data-file="logo.png">
-                    <span class="file-icon img-icon">📄</span>
+                    <span class="file-icon img-icon">🖼️</span>
                     <span class="file-name">logo.png</span>
                   </div>
+                </div>
+              </div>
+
+              <!-- Root level Files -->
+              <div class="subfolder-item" data-folder="img">
+                <span class="folder-toggle">▶</span>
+                <span class="folder-icon">📁</span>
+                <span class="folder-name">img</span>
+              </div>
+              <div class="folder-content collapsed" data-folder="img">
+                <div class="file-item" data-file="sait_scheduler.png">
+                  <span class="file-icon img-icon">🖼️</span>
+                  <span class="file-name">sait_scheduler.png</span>
                 </div>
               </div>
 
@@ -248,6 +261,15 @@
           <div class="tab" data-file="about.md" data-tab-id="about.md:preview">
             <span class="tab-icon">📄</span>
             <span class="tab-name">about.md (Preview)</span>
+            <span class="tab-close">×</span>
+          </div>
+          <div
+            class="tab"
+            data-file="projects.md"
+            data-tab-id="projects.md:preview"
+          >
+            <span class="tab-icon">📄</span>
+            <span class="tab-name">projects.md (Preview)</span>
             <span class="tab-close">×</span>
           </div>
         </div>
@@ -483,6 +505,12 @@
                 <div class="line-number">16</div>
                 <div class="line-number">17</div>
                 <div class="line-number">18</div>
+                <div class="line-number">19</div>
+                <div class="line-number">20</div>
+                <div class="line-number">21</div>
+                <div class="line-number">22</div>
+                <div class="line-number">23</div>
+                <div class="line-number">24</div>
               </div>
               <div class="code-content">
                 <div class="code-line">
@@ -539,12 +567,27 @@
                   authentication, schedule conflict detection, multi-format
                   exports (.xlsx, .ics)
                 </div>
-                <div class="code-line">
-                  <span class="markdown-image"
+                <div class="code-line"></div>
+                <div class="code-line markdown-image-line">
+                  <span style="display: none"
                     >![SAIT Schedule Builder
                     Screenshot](img/sait_scheduler.png)</span
                   >
+                  <img
+                    src="img/sait_scheduler.png"
+                    alt="SAIT Schedule Builder Screenshot"
+                    style="
+                      max-width: 50%;
+                      height: auto;
+                      border-radius: 8px;
+                      border: 1px solid #3c3c3c;
+                      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                      margin: 15px 0;
+                      display: block;
+                    "
+                  />
                 </div>
+                <div class="code-line"></div>
                 <div class="code-line">
                   <span class="markdown-link"
                     >[View it
@@ -1606,6 +1649,60 @@
                     alt="Logo"
                     id="logoImage"
                     crossorigin="anonymous"
+                  />
+                </div>
+              </div>
+              <div class="image-viewer-footer">
+                <span class="footer-info"
+                  >Image Preview - Powered by VS Code Image Viewer
+                  Extension</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- sait_scheduler.png - Image Viewer -->
+          <div class="editor-file" data-file="sait_scheduler.png">
+            <div class="image-viewer">
+              <div class="image-viewer-header">
+                <div class="image-info">
+                  <span class="image-filename">sait_scheduler.png</span>
+                  <span class="image-dimensions" id="saitDimensions"
+                    >Loading...</span
+                  >
+                  <span class="image-size" id="saitSize"></span>
+                </div>
+                <div class="image-controls">
+                  <button
+                    class="image-control-btn"
+                    id="saitZoomOut"
+                    title="Zoom Out"
+                  >
+                    −
+                  </button>
+                  <span class="zoom-level" id="saitZoomLevel">100%</span>
+                  <button
+                    class="image-control-btn"
+                    id="saitZoomIn"
+                    title="Zoom In"
+                  >
+                    +
+                  </button>
+                  <button
+                    class="image-control-btn"
+                    id="saitResetZoom"
+                    title="Reset Zoom"
+                  >
+                    ⟲
+                  </button>
+                </div>
+              </div>
+              <div class="image-viewer-content">
+                <div class="image-container" id="saitImageContainer">
+                  <img
+                    src="img/sait_scheduler.png"
+                    alt="SAIT Schedule Builder Screenshot"
+                    id="saitImage"
                   />
                 </div>
               </div>

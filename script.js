@@ -134,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Image Viewer Functionality
   initImageViewer();
   initLogoImageViewer();
+  initSaitImageViewer();
 });
 
 function openFile(fileName) {
@@ -481,6 +482,105 @@ function initLogoImageViewer() {
   }
 }
 
+// SAIT Scheduler Image Viewer Functions
+function initSaitImageViewer() {
+  const saitImage = document.getElementById("saitImage");
+  const saitImageContainer = document.getElementById("saitImageContainer");
+  const saitZoomInBtn = document.getElementById("saitZoomIn");
+  const saitZoomOutBtn = document.getElementById("saitZoomOut");
+  const saitResetZoomBtn = document.getElementById("saitResetZoom");
+  const saitZoomLevelDisplay = document.getElementById("saitZoomLevel");
+  const saitDimensions = document.getElementById("saitDimensions");
+  const saitSize = document.getElementById("saitSize");
+
+  let currentZoom = 1;
+  const zoomStep = 0.1;
+  const minZoom = 0.1;
+  const maxZoom = 5;
+
+  if (!saitImage) return;
+
+  // Function to update image dimensions
+  function updateImageInfo() {
+    if (saitImage.naturalWidth && saitImage.naturalHeight) {
+      saitDimensions.textContent = `${saitImage.naturalWidth} × ${saitImage.naturalHeight}`;
+
+      // Estimate file size (approximate)
+      fetch(saitImage.src)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const sizeKB = (blob.size / 1024).toFixed(2);
+          saitSize.textContent = `${sizeKB} KB`;
+        })
+        .catch(() => {
+          saitSize.textContent = "Size unknown";
+        });
+    }
+  }
+
+  // Check if image is already loaded (from cache)
+  if (saitImage.complete && saitImage.naturalWidth > 0) {
+    updateImageInfo();
+  }
+
+  // Also set up onload event for fresh loads
+  saitImage.onload = function () {
+    updateImageInfo();
+  };
+
+  // Zoom In
+  if (saitZoomInBtn) {
+    saitZoomInBtn.addEventListener("click", () => {
+      if (currentZoom < maxZoom) {
+        currentZoom += zoomStep;
+        updateZoom();
+      }
+    });
+  }
+
+  // Zoom Out
+  if (saitZoomOutBtn) {
+    saitZoomOutBtn.addEventListener("click", () => {
+      if (currentZoom > minZoom) {
+        currentZoom -= zoomStep;
+        updateZoom();
+      }
+    });
+  }
+
+  // Reset Zoom
+  if (saitResetZoomBtn) {
+    saitResetZoomBtn.addEventListener("click", () => {
+      currentZoom = 1;
+      updateZoom();
+    });
+  }
+
+  // Update zoom transform
+  function updateZoom() {
+    saitImageContainer.style.transform = `scale(${currentZoom})`;
+    saitZoomLevelDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+  }
+
+  // Mouse wheel zoom
+  const editorFile = saitImage.closest(".editor-file");
+  const imageViewerContent = editorFile?.querySelector(".image-viewer-content");
+  if (imageViewerContent) {
+    imageViewerContent.addEventListener("wheel", (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY < 0 && currentZoom < maxZoom) {
+          currentZoom += zoomStep;
+          updateZoom();
+        } else if (e.deltaY > 0 && currentZoom > minZoom) {
+          currentZoom -= zoomStep;
+          updateZoom();
+        }
+      }
+    });
+  }
+}
+
 // Markdown Viewer Functionality
 // Old toggle functions removed - now using context menu
 
@@ -577,6 +677,20 @@ function convertMarkdownToHTML(markdown) {
       // Process inline formatting for list items
       listText = processInlineFormatting(listText);
       result.push("<li>" + listText + "</li>");
+    } else if (trimmed.startsWith("![")) {
+      // Standalone image
+      if (currentParagraph.length > 0) {
+        result.push(
+          "<p>" + processInlineFormatting(currentParagraph.join(" ")) + "</p>"
+        );
+        currentParagraph = [];
+      }
+      if (inList) {
+        result.push("</ul>");
+        inList = false;
+      }
+      // Process the image
+      result.push(processInlineFormatting(trimmed));
     } else if (trimmed === "") {
       // Empty line
       if (currentParagraph.length > 0) {
