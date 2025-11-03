@@ -504,7 +504,9 @@ function convertMarkdownToHTML(markdown) {
     if (trimmed.startsWith("### ")) {
       // H3 header
       if (currentParagraph.length > 0) {
-        result.push("<p>" + currentParagraph.join(" ") + "</p>");
+        result.push(
+          "<p>" + processInlineFormatting(currentParagraph.join(" ")) + "</p>"
+        );
         currentParagraph = [];
       }
       if (inList) {
@@ -515,7 +517,9 @@ function convertMarkdownToHTML(markdown) {
     } else if (trimmed.startsWith("## ")) {
       // H2 header
       if (currentParagraph.length > 0) {
-        result.push("<p>" + currentParagraph.join(" ") + "</p>");
+        result.push(
+          "<p>" + processInlineFormatting(currentParagraph.join(" ")) + "</p>"
+        );
         currentParagraph = [];
       }
       if (inList) {
@@ -526,7 +530,9 @@ function convertMarkdownToHTML(markdown) {
     } else if (trimmed.startsWith("# ")) {
       // H1 header
       if (currentParagraph.length > 0) {
-        result.push("<p>" + currentParagraph.join(" ") + "</p>");
+        result.push(
+          "<p>" + processInlineFormatting(currentParagraph.join(" ")) + "</p>"
+        );
         currentParagraph = [];
       }
       if (inList) {
@@ -537,7 +543,9 @@ function convertMarkdownToHTML(markdown) {
     } else if (trimmed.startsWith("- ")) {
       // List item
       if (currentParagraph.length > 0) {
-        result.push("<p>" + currentParagraph.join(" ") + "</p>");
+        result.push(
+          "<p>" + processInlineFormatting(currentParagraph.join(" ")) + "</p>"
+        );
         currentParagraph = [];
       }
       if (!inList) {
@@ -1233,8 +1241,11 @@ function initWelcomeScreen() {
     link.addEventListener("click", () => {
       const fileName = link.getAttribute("data-file");
 
-      if (fileName.endsWith(".md")) {
-        // Open markdown files in preview mode by default
+      if (fileName === "README.md") {
+        // Open README in editor mode
+        openFile(fileName, "editor");
+      } else if (fileName.endsWith(".md")) {
+        // Open other markdown files in preview mode by default
         openFile(fileName, "preview");
       } else {
         openFile(fileName);

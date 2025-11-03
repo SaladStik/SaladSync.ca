@@ -111,22 +111,6 @@ body {
   color: #888888;
 }
 
-.window-controls {
-  display: flex;
-  gap: 10px;
-}
-
-.control {
-  cursor: pointer;
-  padding: 0 10px;
-  font-size: 14px;
-  color: #cccccc;
-}
-
-.control:hover {
-  background-color: #2a2d2e;
-}
-
 /* Main Container */
 .container {
   display: flex;
@@ -327,8 +311,17 @@ body {
   background-color: #2d2d2d;
   border-bottom: 1px solid #252526;
   overflow-x: auto;
+  overflow-y: hidden;
   height: 35px;
   flex-shrink: 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.tabs::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .tab {
@@ -341,6 +334,7 @@ body {
   cursor: pointer;
   user-select: none;
   min-width: 120px;
+  flex-shrink: 0;
 }
 
 .tab:hover {
@@ -667,7 +661,7 @@ body {
 }
 
 .markdown-bold {
-  color: #ce9178;
+  color: #ffffff;
   font-weight: bold;
 }
 
