@@ -1,1 +1,20 @@
 .vscode/settings.json
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Wrangler
+.wrangler/
+wrangler.toml.backup
+
+# Build files
+dist/
+.cache/

@@ -1,0 +1,22 @@
+{
+  "name": "saladsync-portfolio",
+  "version": "1.0.0",
+  "description": "Interactive VS Code-style Portfolio",
+  "main": "index.html",
+  "scripts": {
+    "deploy": "wrangler pages deploy . --project-name=saladsync-portfolio",
+    "deploy:production": "wrangler pages deploy . --project-name=saladsync-portfolio --branch=main",
+    "dev": "wrangler pages dev .",
+    "preview": "wrangler pages deploy . --project-name=saladsync-portfolio --branch=preview"
+  },
+  "keywords": [
+    "portfolio",
+    "vscode",
+    "cloudflare"
+  ],
+  "author": "Nick Irvine",
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^3.78.0"
+  }
+}

@@ -1,0 +1,10 @@
+# Cloudflare Pages Configuration
+
+## Files to exclude from deployment
+
+node_modules/
+.git/
+.vscode/
+_.log
+.DS_Store
+_.md.backup
