@@ -744,6 +744,12 @@ function processInlineFormatting(text) {
     '<a href="$2" target="_blank">$1</a>'
   );
 
+  // Email addresses (convert plain emails to mailto links)
+  text = text.replace(
+    /\b([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b/g,
+    '<a href="mailto:$1">$1</a>'
+  );
+
   // Inline code
   text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
 
