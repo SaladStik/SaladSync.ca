@@ -14,11 +14,13 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 22px;
 }
 
 /* Title Bar */
 .title-bar {
-  background-color: #323233;
+  background-color: #0c1fca;
+  color: #f9f9ff;
   height: 35px;
   display: flex;
   align-items: center;
@@ -26,6 +28,7 @@ body {
   padding: 0 10px;
   user-select: none;
   border-bottom: 1px solid #252526;
+  flex-shrink: 0;
 }
 
 .title-bar-left {
@@ -40,14 +43,14 @@ body {
 
 .menu-item {
   font-size: 13px;
-  color: #cccccc;
+  color: #f9f9ff;
   cursor: pointer;
   padding: 5px 8px;
   border-radius: 3px;
 }
 
 .menu-item:hover {
-  background-color: #2a2d2e;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .title-bar-center {
@@ -116,12 +119,13 @@ body {
   display: flex;
   flex: 1;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* Activity Bar */
 .activity-bar {
   width: 48px;
-  background-color: #333333;
+  background-color: #091691;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -301,7 +305,7 @@ body {
   display: flex;
   flex-direction: column;
   background-color: #1e1e1e;
-  min-height: calc(100vh - 35px); /* Full viewport height minus title bar */
+  min-height: 0;
   position: relative;
 }
 
@@ -390,10 +394,12 @@ body {
 .line-numbers {
   background-color: #1e1e1e;
   padding: 20px 10px;
+  padding-right: 10px;
   text-align: right;
   user-select: none;
   color: #858585;
   min-width: 50px;
+  flex-shrink: 0;
 }
 
 .line-number {
@@ -406,10 +412,12 @@ body {
 .code-content {
   flex: 1;
   padding: 20px;
+  padding-left: 20px;
   font-family: "Consolas", "Courier New", monospace;
   font-size: 14px;
   line-height: 22px;
   background-color: #1e1e1e;
+  overflow-x: auto;
 }
 
 .code-content pre {
@@ -742,6 +750,23 @@ body {
   font-style: italic;
 }
 
+/* Syntax Highlighting for JSON */
+.json-property {
+  color: #9cdcfe;
+}
+
+.json-string {
+  color: #ce9178;
+}
+
+.json-number {
+  color: #b5cea8;
+}
+
+.json-boolean {
+  color: #569cd6;
+}
+
 /* Image Viewer Styles */
 .image-viewer {
   width: 100%;
@@ -847,6 +872,10 @@ body {
 
 /* Status Bar */
 .status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 22px;
   background-color: #007acc;
   color: #ffffff;
@@ -856,6 +885,7 @@ body {
   padding: 0 10px;
   font-size: 12px;
   user-select: none;
+  z-index: 1000;
 }
 
 .status-left,

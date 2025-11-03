@@ -196,6 +196,15 @@ function updateSidebar(tabType) {
                         <h3 style="font-size: 11px; color: #858585; margin-bottom: 10px; text-transform: uppercase;">Installed</h3>
                         
                         <div style="display: flex; gap: 10px; padding: 10px; background: #252526; border-radius: 4px; margin-bottom: 10px; cursor: pointer;" onmouseover="this.style.background='#2a2d2e'" onmouseout="this.style.background='#252526'">
+                            <div style="font-size: 24px;">🎨</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; margin-bottom: 4px;">Peacock</div>
+                                <div style="font-size: 11px; color: #858585;">Subtly change workspace color for quick identification</div>
+                                <div style="font-size: 10px; color: #007acc; margin-top: 4px;">v4.2.2 • johnpapa.vscode-peacock</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; padding: 10px; background: #252526; border-radius: 4px; margin-bottom: 10px; cursor: pointer;" onmouseover="this.style.background='#2a2d2e'" onmouseout="this.style.background='#252526'">
                             <div style="font-size: 24px;">🖼️</div>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600; margin-bottom: 4px;">Image Viewer</div>
@@ -207,18 +216,27 @@ function updateSidebar(tabType) {
                         <div style="display: flex; gap: 10px; padding: 10px; background: #252526; border-radius: 4px; margin-bottom: 10px; cursor: pointer;" onmouseover="this.style.background='#2a2d2e'" onmouseout="this.style.background='#252526'">
                             <div style="font-size: 24px;">📝</div>
                             <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 4px;">Markdown Preview</div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">Markdown Preview Enhanced</div>
                                 <div style="font-size: 11px; color: #858585;">Preview Markdown files with syntax highlighting</div>
                                 <div style="font-size: 10px; color: #007acc; margin-top: 4px;">v2.5.1</div>
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 10px; padding: 10px; background: #252526; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='#2a2d2e'" onmouseout="this.style.background='#252526'">
+                        <div style="display: flex; gap: 10px; padding: 10px; background: #252526; border-radius: 4px; margin-bottom: 10px; cursor: pointer;" onmouseover="this.style.background='#2a2d2e'" onmouseout="this.style.background='#252526'">
                             <div style="font-size: 24px;">🎨</div>
                             <div style="flex: 1;">
-                                <div style="font-weight: 600; margin-bottom: 4px;">Dark+ Theme</div>
-                                <div style="font-size: 11px; color: #858585;">VS Code's default dark theme</div>
-                                <div style="font-size: 10px; color: #007acc; margin-top: 4px;">v1.0.0</div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">Material Icon Theme</div>
+                                <div style="font-size: 11px; color: #858585;">Material Design icons for VS Code</div>
+                                <div style="font-size: 10px; color: #007acc; margin-top: 4px;">v4.18.0 • PKief.material-icon-theme</div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; padding: 10px; background: #252526; border-radius: 4px; cursor: pointer;" onmouseover="this.style.background='#2a2d2e'" onmouseout="this.style.background='#252526'">
+                            <div style="font-size: 24px;">⚡</div>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; margin-bottom: 4px;">Live Server</div>
+                                <div style="font-size: 11px; color: #858585;">Launch a development local server with live reload</div>
+                                <div style="font-size: 10px; color: #007acc; margin-top: 4px;">v5.7.9 • ritwickdey.LiveServer</div>
                             </div>
                         </div>
                     </div>
