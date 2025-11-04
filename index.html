@@ -115,7 +115,7 @@
         <div class="sidebar-header">
           <span class="sidebar-title">EXPLORER</span>
         </div>
-        <div class="sidebar-content">
+        <div class="sidebar-content explorer-content">
           <div class="folder-section">
             <div class="folder-header">
               <span class="folder-icon">▼</span>
@@ -243,6 +243,32 @@
               <div class="file-item" data-file=".gitignore">
                 <span class="file-icon git-icon">📄</span>
                 <span class="file-name">.gitignore</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search Content (hidden by default) -->
+        <div class="sidebar-content search-content" style="display: none">
+          <div class="search-container">
+            <div class="search-input-wrapper">
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Search"
+                id="searchInput"
+              />
+              <button
+                class="search-clear"
+                id="searchClear"
+                style="display: none"
+              >
+                ×
+              </button>
+            </div>
+            <div class="search-results" id="searchResults">
+              <div class="search-placeholder">
+                <p>Search across all files</p>
               </div>
             </div>
           </div>

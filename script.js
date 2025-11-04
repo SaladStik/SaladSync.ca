@@ -175,14 +175,18 @@ function updateSidebar(tabType) {
     case "search":
       sidebarTitle.textContent = "SEARCH";
       sidebarContent.innerHTML = `
-                <div style="padding: 20px; color: #858585;">
-                    <input type="text" placeholder="Search..." 
+                <div class="search-panel" style="padding: 10px;">
+                    <input type="text" id="fileSearchInput" placeholder="Search..." 
                            style="width: 100%; padding: 8px; background: #3c3c3c; 
                                   border: 1px solid #454545; color: #cccccc; 
-                                  border-radius: 3px; font-size: 13px;">
-                    <p style="margin-top: 20px; font-size: 12px;">No results found</p>
+                                  border-radius: 3px; font-size: 13px; margin-bottom: 10px;">
+                    <div id="searchResultsContainer" style="color: #858585; font-size: 12px;">
+                        <p style="padding: 10px;">Type to search across all files</p>
+                    </div>
                 </div>
             `;
+      // Initialize search functionality
+      setTimeout(() => initFileSearch(), 0);
       break;
     case "source":
       sidebarTitle.textContent = "SOURCE CONTROL";
@@ -1544,4 +1548,270 @@ function initMobileMenu() {
       }
     });
   });
+}
+
+// File Search Functionality
+function initFileSearch() {
+  const searchInput = document.getElementById("fileSearchInput");
+  const resultsContainer = document.getElementById("searchResultsContainer");
+
+  if (!searchInput || !resultsContainer) {
+    console.log("Search elements not found");
+    return;
+  }
+
+  console.log("Search initialized");
+
+  searchInput.addEventListener("input", (e) => {
+    const query = e.target.value.trim().toLowerCase();
+
+    if (!query) {
+      resultsContainer.innerHTML =
+        '<p style="padding: 10px;">Type to search across all files</p>';
+      return;
+    }
+
+    const results = [];
+
+    // Define searchable content from all markdown files
+    const fileContents = {
+      "about.md": document.querySelector(
+        '.editor-file[data-file="about.md"] .md-editor-view .code-content'
+      ),
+      "projects.md": document.querySelector(
+        '.editor-file[data-file="projects.md"] .md-editor-view .code-content'
+      ),
+      "skills.md": document.querySelector(
+        '.editor-file[data-file="skills.md"] .md-editor-view .code-content'
+      ),
+      "contact.md": document.querySelector(
+        '.editor-file[data-file="contact.md"] .md-editor-view .code-content'
+      ),
+      "README.md": document.querySelector(
+        '.editor-file[data-file="README.md"] .md-editor-view .code-content'
+      ),
+    };
+
+    // Search through each file
+    Object.entries(fileContents).forEach(([fileName, contentElement]) => {
+      if (!contentElement) return;
+
+      // Try to get code-line elements first (original structure)
+      let lines = contentElement.querySelectorAll(".code-line");
+
+      // If no code-line elements, look for pre element (editable structure)
+      if (lines.length === 0) {
+        const preElement = contentElement.querySelector("pre");
+        if (preElement) {
+          // Split the pre content by newlines to create "virtual" lines
+          const textContent = preElement.textContent;
+          const textLines = textContent.split("\n");
+
+          textLines.forEach((lineText, index) => {
+            const text = lineText.toLowerCase();
+            if (text.includes(query)) {
+              results.push({
+                file: fileName,
+                lineNumber: index + 1,
+                lineText: lineText.trim(),
+                element: preElement,
+              });
+            }
+          });
+        }
+      } else {
+        lines.forEach((line, index) => {
+          const text = line.textContent.toLowerCase();
+          if (text.includes(query)) {
+            results.push({
+              file: fileName,
+              lineNumber: index + 1,
+              lineText: line.textContent.trim(),
+              element: line,
+            });
+          }
+        });
+      }
+    });
+
+    // Display results
+    if (results.length === 0) {
+      resultsContainer.innerHTML = `<p style="padding: 10px;">No results found for "${e.target.value}"</p>`;
+    } else {
+      let html = `<div style="padding: 5px; font-size: 11px; color: #858585; margin-bottom: 5px;">${
+        results.length
+      } result${results.length > 1 ? "s" : ""}</div>`;
+
+      // Group by file
+      const grouped = {};
+      results.forEach((result) => {
+        if (!grouped[result.file]) grouped[result.file] = [];
+        grouped[result.file].push(result);
+      });
+
+      Object.entries(grouped).forEach(([file, fileResults]) => {
+        html += `
+          <div style="margin-bottom: 15px;">
+            <div style="font-size: 11px; font-weight: 600; color: #cccccc; margin-bottom: 5px; padding: 5px;">
+              📄 ${file} (${fileResults.length})
+            </div>
+        `;
+
+        fileResults.forEach((result) => {
+          const highlightedText = result.lineText.replace(
+            new RegExp(`(${query})`, "gi"),
+            '<span style="background: #515c6a; color: #fff;">$1</span>'
+          );
+
+          html += `
+            <div class="search-result-item" 
+                 data-file="${result.file}" 
+                 data-line="${result.lineNumber}"
+                 style="padding: 6px 10px; cursor: pointer; font-size: 11px; border-left: 2px solid transparent; margin-bottom: 2px;"
+                 onmouseover="this.style.background='#2a2d2e'; this.style.borderLeftColor='#007acc';" 
+                 onmouseout="this.style.background='transparent'; this.style.borderLeftColor='transparent';">
+              <div style="color: #858585; font-size: 10px; margin-bottom: 2px;">Line ${result.lineNumber}</div>
+              <div style="color: #cccccc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${highlightedText}</div>
+            </div>
+          `;
+        });
+
+        html += "</div>";
+      });
+
+      resultsContainer.innerHTML = html;
+
+      // Add click handlers to result items
+      setTimeout(() => {
+        document.querySelectorAll(".search-result-item").forEach((item) => {
+          item.addEventListener("click", () => {
+            const file = item.getAttribute("data-file");
+            const line = parseInt(item.getAttribute("data-line"));
+            openFileAtLine(file, line);
+          });
+        });
+      }, 0);
+    }
+  });
+}
+
+function openFileAtLine(fileName, lineNumber) {
+  // Open the file in editor mode (not preview) to show the actual text
+  if (fileName.endsWith(".md")) {
+    openFile(fileName, "editor");
+  } else {
+    openFile(fileName);
+  }
+
+  // Wait for file to open and become visible, then navigate to line
+  setTimeout(() => {
+    const editorFile = document.querySelector(
+      `.editor-file[data-file="${fileName}"]`
+    );
+    if (!editorFile) {
+      console.log("Editor file not found:", fileName);
+      return;
+    }
+
+    // Make sure the file is visible
+    if (!editorFile.classList.contains("active")) {
+      console.log("File not active, activating...");
+      // Hide all editor files
+      document
+        .querySelectorAll(".editor-file, .welcome-screen")
+        .forEach((f) => {
+          f.classList.remove("active");
+          f.style.display = "none";
+        });
+      // Show this file
+      editorFile.classList.add("active");
+      editorFile.style.display = "block";
+    }
+
+    // First try code-line structure (original)
+    const lines = editorFile.querySelectorAll(".code-line");
+    if (lines.length > 0 && lines[lineNumber - 1]) {
+      // Scroll the line into view
+      lines[lineNumber - 1].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      // Highlight the line temporarily
+      const originalBg = lines[lineNumber - 1].style.backgroundColor;
+      lines[lineNumber - 1].style.backgroundColor = "#515c6a";
+      lines[lineNumber - 1].style.transition = "background-color 0.3s";
+
+      setTimeout(() => {
+        lines[lineNumber - 1].style.backgroundColor = originalBg;
+        setTimeout(() => {
+          lines[lineNumber - 1].style.transition = "";
+        }, 300);
+      }, 1000);
+    } else {
+      // Try pre element structure (editable)
+      const preElement = editorFile.querySelector(".code-content pre");
+      if (preElement) {
+        // Get the text content and split by lines
+        const text = preElement.textContent;
+        const textLines = text.split("\n");
+
+        if (lineNumber > 0 && lineNumber <= textLines.length) {
+          // Get the target line text
+          const targetLine = textLines[lineNumber - 1];
+
+          // Calculate character position of the target line
+          let charPosition = 0;
+          for (let i = 0; i < lineNumber - 1 && i < textLines.length; i++) {
+            charPosition += textLines[i].length + 1; // +1 for newline
+          }
+
+          // Create a temporary wrapper to highlight the line
+          const lineStartPos = charPosition;
+          const lineEndPos = charPosition + targetLine.length;
+
+          // Split text into: before, target line, after
+          const beforeText = text.substring(0, lineStartPos);
+          const lineText = text.substring(lineStartPos, lineEndPos);
+          const afterText = text.substring(lineEndPos);
+
+          // Temporarily replace content with highlighted version
+          const originalContent = preElement.innerHTML;
+          preElement.innerHTML =
+            escapeHtml(beforeText) +
+            '<mark id="search-highlight" style="background-color: #515c6a; color: #fff; padding: 2px 0; display: inline; transition: background-color 0.5s ease, color 0.5s ease;">' +
+            escapeHtml(lineText) +
+            "</mark>" +
+            escapeHtml(afterText);
+
+          // Focus the pre element
+          preElement.focus();
+
+          // Scroll to show the highlighted line
+          const markElement = preElement.querySelector("mark");
+          if (markElement) {
+            markElement.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            // Start fading out after 1.5 seconds
+            setTimeout(() => {
+              markElement.style.backgroundColor = "transparent";
+              markElement.style.color = "inherit";
+            }, 1500);
+          }
+
+          // Remove highlight completely after fade animation
+          setTimeout(() => {
+            preElement.innerHTML = originalContent;
+          }, 2500);
+        }
+      }
+    }
+  }, 200);
+}
+
+// Helper function to escape HTML
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
 }
