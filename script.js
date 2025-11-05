@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initImageViewer();
   initLogoImageViewer();
   initSaitImageViewer();
+  initWallmountImageViewer();
 });
 
 function openFile(fileName) {
@@ -568,6 +569,108 @@ function initSaitImageViewer() {
 
   // Mouse wheel zoom
   const editorFile = saitImage.closest(".editor-file");
+  const imageViewerContent = editorFile?.querySelector(".image-viewer-content");
+  if (imageViewerContent) {
+    imageViewerContent.addEventListener("wheel", (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY < 0 && currentZoom < maxZoom) {
+          currentZoom += zoomStep;
+          updateZoom();
+        } else if (e.deltaY > 0 && currentZoom > minZoom) {
+          currentZoom -= zoomStep;
+          updateZoom();
+        }
+      }
+    });
+  }
+}
+
+// Wall Mount Image Viewer Functions
+function initWallmountImageViewer() {
+  const wallmountImage = document.getElementById("wallmountImage");
+  const wallmountImageContainer = document.getElementById(
+    "wallmountImageContainer"
+  );
+  const wallmountZoomInBtn = document.getElementById("wallmountZoomIn");
+  const wallmountZoomOutBtn = document.getElementById("wallmountZoomOut");
+  const wallmountResetZoomBtn = document.getElementById("wallmountResetZoom");
+  const wallmountZoomLevelDisplay =
+    document.getElementById("wallmountZoomLevel");
+  const wallmountDimensions = document.getElementById("wallmountDimensions");
+  const wallmountSize = document.getElementById("wallmountSize");
+
+  let currentZoom = 1;
+  const zoomStep = 0.1;
+  const minZoom = 0.1;
+  const maxZoom = 5;
+
+  if (!wallmountImage) return;
+
+  // Function to update image dimensions
+  function updateImageInfo() {
+    if (wallmountImage.naturalWidth && wallmountImage.naturalHeight) {
+      wallmountDimensions.textContent = `${wallmountImage.naturalWidth} × ${wallmountImage.naturalHeight}`;
+
+      // Estimate file size (approximate)
+      fetch(wallmountImage.src)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const sizeKB = (blob.size / 1024).toFixed(2);
+          wallmountSize.textContent = `${sizeKB} KB`;
+        })
+        .catch(() => {
+          wallmountSize.textContent = "Size unknown";
+        });
+    }
+  }
+
+  // Check if image is already loaded (from cache)
+  if (wallmountImage.complete && wallmountImage.naturalWidth > 0) {
+    updateImageInfo();
+  }
+
+  // Also set up onload event for fresh loads
+  wallmountImage.onload = function () {
+    updateImageInfo();
+  };
+
+  // Zoom In
+  if (wallmountZoomInBtn) {
+    wallmountZoomInBtn.addEventListener("click", () => {
+      if (currentZoom < maxZoom) {
+        currentZoom += zoomStep;
+        updateZoom();
+      }
+    });
+  }
+
+  // Zoom Out
+  if (wallmountZoomOutBtn) {
+    wallmountZoomOutBtn.addEventListener("click", () => {
+      if (currentZoom > minZoom) {
+        currentZoom -= zoomStep;
+        updateZoom();
+      }
+    });
+  }
+
+  // Reset Zoom
+  if (wallmountResetZoomBtn) {
+    wallmountResetZoomBtn.addEventListener("click", () => {
+      currentZoom = 1;
+      updateZoom();
+    });
+  }
+
+  // Update zoom transform
+  function updateZoom() {
+    wallmountImageContainer.style.transform = `scale(${currentZoom})`;
+    wallmountZoomLevelDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+  }
+
+  // Mouse wheel zoom
+  const editorFile = wallmountImage.closest(".editor-file");
   const imageViewerContent = editorFile?.querySelector(".image-viewer-content");
   if (imageViewerContent) {
     imageViewerContent.addEventListener("wheel", (e) => {
