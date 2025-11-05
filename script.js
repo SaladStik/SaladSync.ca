@@ -1434,6 +1434,27 @@ function switchToTab(fileName, mode) {
       file.classList.remove("active");
     }
   });
+
+  // Update explorer highlight
+  updateExplorerHighlight(fileName);
+}
+
+// Update explorer file highlight
+function updateExplorerHighlight(fileName) {
+  // Remove all active states from explorer files
+  document.querySelectorAll(".file-item").forEach((item) => {
+    item.classList.remove("active");
+  });
+
+  // If fileName is not "welcome", highlight the corresponding file
+  if (fileName && fileName !== "welcome") {
+    const fileItem = document.querySelector(
+      `.file-item[data-file="${fileName}"]`
+    );
+    if (fileItem) {
+      fileItem.classList.add("active");
+    }
+  }
 }
 
 // Close a tab
@@ -1564,6 +1585,9 @@ function switchToWelcomeTab() {
   if (welcomeScreen) {
     welcomeScreen.classList.add("active");
   }
+
+  // Clear explorer highlight (welcome is not a real file)
+  updateExplorerHighlight("welcome");
 }
 
 function createWelcomeTab() {
