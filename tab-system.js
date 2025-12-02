@@ -89,6 +89,34 @@ function showFile(fileName) {
 
     console.log(`File ${fileName} is now visible`);
 
+    // Initialize image viewer if this is an image file
+    if (
+      fileName === "saladoverflow.png" &&
+      typeof initOverflowImageViewer === "function"
+    ) {
+      initOverflowImageViewer();
+    } else if (
+      fileName === "sait_scheduler.png" &&
+      typeof initSaitImageViewer === "function"
+    ) {
+      initSaitImageViewer();
+    } else if (
+      fileName === "universal_tiny_pc_mount.png" &&
+      typeof initWallmountImageViewer === "function"
+    ) {
+      initWallmountImageViewer();
+    } else if (
+      fileName === "logo.png" &&
+      typeof initLogoImageViewer === "function"
+    ) {
+      initLogoImageViewer();
+    } else if (
+      fileName === "profile.png" &&
+      typeof initImageViewer === "function"
+    ) {
+      initImageViewer();
+    }
+
     // Check dimensions immediately
     console.log(
       "Target file rect (immediate):",
