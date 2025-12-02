@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initImageViewer();
   initLogoImageViewer();
   initSaitImageViewer();
+  initOverflowImageViewer();
   initWallmountImageViewer();
 });
 
@@ -569,6 +570,107 @@ function initSaitImageViewer() {
 
   // Mouse wheel zoom
   const editorFile = saitImage.closest(".editor-file");
+  const imageViewerContent = editorFile?.querySelector(".image-viewer-content");
+  if (imageViewerContent) {
+    imageViewerContent.addEventListener("wheel", (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY < 0 && currentZoom < maxZoom) {
+          currentZoom += zoomStep;
+          updateZoom();
+        } else if (e.deltaY > 0 && currentZoom > minZoom) {
+          currentZoom -= zoomStep;
+          updateZoom();
+        }
+      }
+    });
+  }
+}
+
+// Overflow Image Viewer Functions
+function initOverflowImageViewer() {
+  const overflowImage = document.getElementById("overflowImage");
+  const overflowImageContainer = document.getElementById(
+    "overflowImageContainer"
+  );
+  const overflowZoomInBtn = document.getElementById("overflowZoomIn");
+  const overflowZoomOutBtn = document.getElementById("overflowZoomOut");
+  const overflowResetZoomBtn = document.getElementById("overflowResetZoom");
+  const overflowZoomLevelDisplay = document.getElementById("overflowZoomLevel");
+  const overflowDimensions = document.getElementById("overflowDimensions");
+  const overflowSize = document.getElementById("overflowSize");
+
+  let currentZoom = 1;
+  const zoomStep = 0.1;
+  const minZoom = 0.1;
+  const maxZoom = 5;
+
+  if (!overflowImage) return;
+
+  // Function to update image dimensions
+  function updateImageInfo() {
+    if (overflowImage.naturalWidth && overflowImage.naturalHeight) {
+      overflowDimensions.textContent = `${overflowImage.naturalWidth} × ${overflowImage.naturalHeight}`;
+
+      // Estimate file size (approximate)
+      fetch(overflowImage.src)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const sizeKB = (blob.size / 1024).toFixed(2);
+          overflowSize.textContent = `${sizeKB} KB`;
+        })
+        .catch(() => {
+          overflowSize.textContent = "Size unknown";
+        });
+    }
+  }
+
+  // Check if image is already loaded (from cache)
+  if (overflowImage.complete && overflowImage.naturalWidth > 0) {
+    updateImageInfo();
+  }
+
+  // Also set up onload event for fresh loads
+  overflowImage.onload = function () {
+    updateImageInfo();
+  };
+
+  // Zoom In
+  if (overflowZoomInBtn) {
+    overflowZoomInBtn.addEventListener("click", () => {
+      if (currentZoom < maxZoom) {
+        currentZoom += zoomStep;
+        updateZoom();
+      }
+    });
+  }
+
+  // Zoom Out
+  if (overflowZoomOutBtn) {
+    overflowZoomOutBtn.addEventListener("click", () => {
+      if (currentZoom > minZoom) {
+        currentZoom -= zoomStep;
+        updateZoom();
+      }
+    });
+  }
+
+  // Reset Zoom
+  if (overflowResetZoomBtn) {
+    overflowResetZoomBtn.addEventListener("click", () => {
+      currentZoom = 1;
+      updateZoom();
+    });
+  }
+
+  // Update zoom transform
+  function updateZoom() {
+    overflowImageContainer.style.transform = `scale(${currentZoom})`;
+    overflowZoomLevelDisplay.textContent = `${Math.round(currentZoom * 100)}%`;
+  }
+
+  // Mouse wheel zoom
+  const editorFile = overflowImage.closest(".editor-file");
   const imageViewerContent = editorFile?.querySelector(".image-viewer-content");
   if (imageViewerContent) {
     imageViewerContent.addEventListener("wheel", (e) => {
